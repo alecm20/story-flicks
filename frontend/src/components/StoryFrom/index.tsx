@@ -35,6 +35,13 @@ type FieldType = {
     karaoke_highlight_color?: string; // Hex color for karaoke background
 };
 
+const VOICE_RATE_OPTIONS = [
+    { value: 1.0, label: '1.00x (Normal)' },
+    { value: 0.95, label: '0.95x (Slightly slower)' },
+    { value: 0.9, label: '0.90x (Recommended for children)' },
+    { value: 0.85, label: '0.85x (Slow)' },
+];
+
 
 const App: React.FC = () => {
     const { setVideoUrl, setAssembling } = useVideoStore();
@@ -186,7 +193,7 @@ const App: React.FC = () => {
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 16 }}
                     style={{ minWidth: 600, justifyContent: 'flex-start' }}
-                    initialValues={{ remember: true, karaoke: true, chinese_subtitle_enabled: true }}
+                    initialValues={{ remember: true, karaoke: true, chinese_subtitle_enabled: true, voice_rate: 0.9 }}
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
                     autoComplete="off"
@@ -326,6 +333,25 @@ const App: React.FC = () => {
                                             })
                                         }
                                     </Select>
+                                </Form.Item>
+                            );
+                        }}
+                    </Form.Item>
+                    <Form.Item noStyle shouldUpdate={(prev, curr) => prev.voice_provider !== curr.voice_provider}>
+                        {({ getFieldValue }) => {
+                            const provider = getFieldValue('voice_provider') || 'gtts';
+                            if (provider === 'gtts') return null;
+                            return (
+                                <Form.Item<FieldType>
+                                    label={
+                                        <Tooltip title={t('storyForm.voiceRateHint')}>
+                                            <span>{t('storyForm.voiceRate')}</span>
+                                        </Tooltip>
+                                    }
+                                    name="voice_rate"
+                                    rules={[{ required: true, message: t('storyForm.voiceRateMissMsg') }]}
+                                >
+                                    <Select options={VOICE_RATE_OPTIONS} />
                                 </Form.Item>
                             );
                         }}

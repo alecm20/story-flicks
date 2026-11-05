@@ -82,6 +82,7 @@ site/
 *.ipynb
 
 backend/tasks/*
+test/
 tests/
 **/tests/
 
